@@ -8,15 +8,17 @@ import {
   Button,
 } from "@mui/material";
 import { CatchingPokemon } from "@mui/icons-material";
-import { useContext } from "react";
+import { Fragment, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import { BasketContext } from "../contexts/BaskteContext";
+import { useSelector } from "react-redux";
 export const Layout = ({ children }) => {
   const navigate = useNavigate();
   const { loggedIn, handlerLogInOut } = useContext(AuthContext);
-  const { items } = useContext(BasketContext);
+  const { basket } = useSelector((state) => state);
+  // const { items } = useContext(BasketContext);
   return (
     <>
+      
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -50,24 +52,43 @@ export const Layout = ({ children }) => {
             </Typography>
           </Stack>
           <Stack direction="row" spacing={2}>
-          {items.length > 0 && (
-              <Button  component={NavLink} to="/basket" variant="outlined" color="inherit">
-                Basket ({items.length})
-              </Button>
+            {basket.length > 0 && (
+              <Button
+                component={NavLink}
+                to="/basket"
+                variant="outlined"
+                color="inherit"
+              >Basket ({basket.length})</Button>
             )}
+
             {!loggedIn && (
               <>
-                <Button component={NavLink} to="/signin" variant="outlined" color="inherit">
+                <Button
+                  component={NavLink}
+                  to="/signin"
+                  variant="outlined"
+                  color="inherit"
+                >
                   Sign In
                 </Button>
-                <Button component={NavLink} to="/signup" variant="outlined" color="inherit">
+                <Button
+                  component={NavLink}
+                  to="/signup"
+                  variant="outlined"
+                  color="inherit"
+                >
                   Sign Up
                 </Button>
               </>
             )}
             {loggedIn && (
               <>
-                <Button component={NavLink} to="/admin" variant="outlined" color="inherit">
+                <Button
+                  component={NavLink}
+                  to="/admin"
+                  variant="outlined"
+                  color="inherit"
+                >
                   Admin Panel
                 </Button>
                 <Button
@@ -81,7 +102,6 @@ export const Layout = ({ children }) => {
                 </Button>
               </>
             )}
-      
           </Stack>
         </Toolbar>
       </AppBar>

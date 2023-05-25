@@ -1,20 +1,30 @@
-import { useContext } from "react";
-import { BasketContext } from "../../../contexts/BaskteContext";
 import { Alert, CardMedia, Grid, Button, Typography } from "@mui/material";
 import { Layout } from "../../../components/Layout";
+import { useDispatch, useSelector } from "react-redux";
+import { addProductToBasket } from "../../../store/actions";
 
 export const BasketPage = () => {
-  const { items, isExistItem, addToBasket } = useContext(BasketContext);
-  const total = items.reduce((acc, item) => acc + item.price, 0);
+  // const { items, isExistItem, addToBasket } = useContext(BasketContext);
+
+  const {basket}=useSelector(state => state)
+  const dispatch=useDispatch()
+  const isExistItem=(id)=>{
+    return basket.some(item=>item.id==id)
+  }
+  const total = basket.reduce((acc, item) => acc + item.price, 0);
+
+  const addToBasket=(data)=>{
+    dispatch(addProductToBasket(data)) 
+  }
   return (
     <Layout>
       <Grid>
-        {items.length < 1 && (
+        {basket.length < 1 && (
           <Alert severity="error">You have not any items in your basket </Alert>
         )}
-        {items.length > 0 && (
+        {basket.length > 0 && (
           <ul>
-            {items.map((item) => (
+            {basket.map((item) => (
               <li key={item.id}>
                 {item.title} - {item.price}$
                 <CardMedia
@@ -56,7 +66,7 @@ export const BasketPage = () => {
         )}
       </Grid>
       <Grid marginTop={10}>
-        {items.length > 0 && (
+        {basket.length > 0 && (
           <Typography
             fontSize={22}
             gutterBottom

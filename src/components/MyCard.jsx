@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useContext } from "react";
 import {
   Card,
   CardActions,
@@ -9,11 +8,22 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import { BasketContext } from "../contexts/BaskteContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addProductToBasket, removeItemFromBasket } from "../store/actions";
 
 export const MyCard = ({ id, title, description, image, price }) => {
-  const { addToBasket,isExistItem } = useContext(BasketContext);
-
+  const { basket } = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const isExistItem = (id) => {
+    return basket.some((item) => item.id == id);
+  };
+  const handleToggleBasket = (data) => {
+    if (!isExistItem(id)) {
+      dispatch(addProductToBasket(data));
+      return;
+    }
+    dispatch(removeItemFromBasket(data.id));
+  };
   return (
     <Card>
       <CardMedia
@@ -39,27 +49,31 @@ export const MyCard = ({ id, title, description, image, price }) => {
       </CardContent>
       <CardActions style={{ justifyContent: "center" }}>
         <Button
-          onClick={() => addToBasket({ id, title, description, image, price })}
-          sx={isExistItem(id)?{
-            backgroundColor: "#eb4034",
-            color: "white",
-            ":hover": {
-              bgcolor: "#D3310D",
-              color: "white",
-            },
-          }:{
-            backgroundColor: "#1976d2",
-            color: "white",
-            ":hover": {
-              bgcolor: "#054BB0",
-              color: "white",
-            },
-          }}
+          onClick={() =>
+            handleToggleBasket({ id, title, description, image, price })
+          }
+          sx={
+            !isExistItem(id)
+              ? {
+                  backgroundColor: "#1976d2",
+                  color: "white",
+                  ":hover": {
+                    bgcolor: "#054BB0",
+                    color: "white",
+                  },
+                }
+              : {
+                  backgroundColor: "#eb4034",
+                  color: "white",
+                  ":hover": {
+                    bgcolor: "#D3310D",
+                    color: "white",
+                  },
+                }
+          }
           size="small"
         >
-          {
-            isExistItem(id)?"Remove from basker":"Add to basket"
-          }
+          {!isExistItem(id) ? "Add to basket" : "Remove from item"}
         </Button>
       </CardActions>
     </Card>
